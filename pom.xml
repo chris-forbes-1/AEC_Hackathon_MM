@@ -5,7 +5,7 @@
 	<artifactId>hackathon</artifactId>
 	<packaging>war</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>CounterWebApp Maven Webapp</name>
+	<name>Hackathon</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<jdk.version>1.8</jdk.version>
