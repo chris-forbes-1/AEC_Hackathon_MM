@@ -1,4 +1,4 @@
-var defaultUrn = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6YmtfbWVkL0NsaW5pY19NRVAucnZ0';
+var defaultUrn = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6YmtfbWVkL0NsaW5pY19Cb2lsZXJSb29tLnJ2dA==';
 /*
 $(document).ready(function () {
     var tokenurl = 'http://' + window.location.host + '/api/token';
@@ -37,6 +37,7 @@ function onError(error) {
 };
 */
 
+        var viewer;
         $(document).ready(function () {
             var getToken =  function() {
                 var xhr = new XMLHttpRequest();
@@ -49,9 +50,9 @@ function onError(error) {
 
             function initializeViewer(containerId, documentId, role) {
                 var viewerContainer = document.getElementById(containerId);
-                var viewer = new Autodesk.Viewing.Private.GuiViewer3D(
+                var _viewer = new Autodesk.Viewing.Private.GuiViewer3D(
                         viewerContainer);
-                viewer.start();
+                _viewer.start();
 
                 Autodesk.Viewing.Document.load(documentId,
                         function (document) {
@@ -61,13 +62,14 @@ function onError(error) {
                                     { 'type': 'geometry', 'role': role },
                                     true);
 
-                            viewer.load(document.getViewablePath(geometryItems[0]));
+                            _viewer.load(document.getViewablePath(geometryItems[0]));
                         },
 
                         function (msg) {
                             console.log("Error loading document: " + msg);
                         }
                 );
+                return _viewer;
             }
 
             function initialize() {
@@ -81,8 +83,19 @@ function onError(error) {
                 var urn = (paramUrn !== '' ? paramUrn : defaultUrn);
                 urn = "https://developer.api.autodesk.com/viewingservice/v1/" + urn;
                 Autodesk.Viewing.Initializer(options, function () {
-                    initializeViewer('viewerDiv', urn, '3d');
+                    viewer = initializeViewer('viewerDiv', urn, '3d');
                 });
             }
             initialize();
+            setInterval(loop, 500);
         });
+
+    var prevselect, select;
+    function loop(){
+        select = viewer.getSelection();
+        if(select != prevselect){
+            console.log(select);
+        }
+        prevselect = select;
+    }
+
